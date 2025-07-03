@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { createUserService } from '../services/userService';
-import { userSchema } from '../validators/userValidators';
-import { ZodError } from 'zod';
+import UserService from '../services/userService';
 
 interface BusinessError {
-    errors: { message: string }[];
+  errors: { message: string }[];
 }
 
 
@@ -12,7 +10,7 @@ interface BusinessError {
 class UserController {
   private static isBusinessError(err: unknown): err is BusinessError {
     return typeof err === 'object' && err !== null && 'errors' in err;
-}
+  }
 
   public static async createUser(req: Request, res: Response, next: NextFunction) {
     try {
@@ -21,12 +19,13 @@ class UserController {
       res.status(201).json(user);
       return;
     } catch (err: unknown) {
-        if (err instanceof ZodError) {
-            return res.status(400).json({ error: err.errors });
-        }
-        if (isBusinessError(err)) {
-            return res.status(400).json({ error: err.errors });
-        }
-        next(err);
+      if (UserController.isBusinessError(err)) {
+        res.status(400).json({ error: err.errors });
+        return;
+      }
+      next(err);
     }
-} 
+  }
+}
+
+export default UserController;

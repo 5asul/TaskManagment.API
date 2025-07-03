@@ -6,7 +6,9 @@
     "dev": "ts-node-dev --respawn --transpile-only index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --ext .ts,.js",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,8 @@
     "@types/node": "^24.0.8",
     "@types/supertest": "^6.0.3",
     "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9.30.0",
     "jest": "^30.0.3",
     "prettier": "^3.6.2",

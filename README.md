@@ -5,6 +5,7 @@ A modern, production-ready RESTful API for managing users and tasks, built with 
 ---
 
 ## Features
+
 - User and Task management (CRUD)
 - TypeScript-first, strict typing
 - Prisma ORM with PostgreSQL
@@ -20,29 +21,35 @@ A modern, production-ready RESTful API for managing users and tasks, built with 
 ## Getting Started
 
 ### 1. **Clone the repository**
+
 ```bash
 git clone <your-repo-url>
 cd TaskManagment.API
 ```
 
 ### 2. **Install dependencies**
+
 ```bash
 yarn install
 ```
 
 ### 3. **Configure the database**
+
 Edit the `.env` file with your PostgreSQL connection string:
+
 ```
 DATABASE_URL=postgresql://postgres:7175@localhost:5432/taskManagmentDB
 ```
 
 ### 4. **Run migrations and generate Prisma client**
+
 ```bash
 yarn prisma migrate dev --name init
 yarn prisma generate
 ```
 
 ### 5. **Start the development server**
+
 ```bash
 yarn dev
 ```
@@ -55,9 +62,11 @@ The API will be running at:
 ## API Documentation (Swagger)
 
 Interactive API docs are available at:
+
 ```
 http://localhost:3000/api-docs
 ```
+
 - Explore all endpoints
 - Try requests directly from the browser
 - See request/response schemas and error messages
@@ -67,11 +76,13 @@ http://localhost:3000/api-docs
 ## Example API Endpoints
 
 ### **Users**
+
 - **Create User:**
   - `POST /api/users`
   - Body: `{ "name": "John Doe", "email": "john@example.com" }`
 
 ### **Tasks**
+
 - **Create Task:**
   - `POST /api/tasks`
   - Body: `{ "title": "Task 1", "description": "Details", "dueDate": "2024-07-01T12:00:00Z", "status": "pending", "userId": "<user-uuid>" }`
@@ -86,6 +97,7 @@ http://localhost:3000/api-docs
 ---
 
 ## Running Tests
+
 ```bash
 yarn test
 ```
@@ -93,6 +105,7 @@ yarn test
 ---
 
 ## Project Structure
+
 ```
 prisma/           # Prisma schema and migrations
 prisma/client.ts  # Singleton Prisma client
@@ -107,4 +120,5 @@ index.ts          # App entry point
 ---
 
 ## License
+
 5asul
