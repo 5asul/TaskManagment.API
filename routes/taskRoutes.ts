@@ -1,11 +1,13 @@
-import { Router, RequestHandler } from 'express';
-import { createTask, getTasks, updateTaskStatus, deleteTask } from '../controllers/taskController';
+import { Router } from 'express';
+import TaskController from '../controllers/taskController';
+import { validate } from '../validators/validate';
+import { taskSchema, taskQuerySchema, statusSchema } from '../validators/taskValidators';
 
 const router = Router();
 
-router.post('/', createTask as RequestHandler);
-router.get('/', getTasks as RequestHandler);
-router.patch('/:id/status', updateTaskStatus as RequestHandler);
-router.delete('/:id', deleteTask as RequestHandler);
+router.post('/', validate(taskSchema), TaskController.createTask);
+router.get('/', validate(taskQuerySchema, 'query'), TaskController.getTasks);
+router.patch('/:id/status', validate(statusSchema), TaskController.updateTaskStatus);
+router.delete('/:id', TaskController.deleteTask);
 
-export default router; 
+export default router;

@@ -1,28 +1,31 @@
 import { Request, Response, NextFunction } from 'express';
-import { createUserService } from '../services/userService';
-import { userSchema } from '../validators/userValidators';
-import { ZodError } from 'zod';
+import UserService from '../services/userService';
 
 interface BusinessError {
-    errors: { message: string }[];
+  errors: { message: string }[];
 }
 
-function isBusinessError(err: unknown): err is BusinessError {
+const userService = new UserService();
+
+class UserController {
+  private static isBusinessError(err: unknown): err is BusinessError {
     return typeof err === 'object' && err !== null && 'errors' in err;
+  }
+
+  public async createUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = req.body;
+      const user = await userService.createUser(data);
+      res.status(201).json(user);
+      return;
+    } catch (err: unknown) {
+      if (UserController.isBusinessError(err)) {
+        res.status(400).json({ error: err.errors });
+        return;
+      }
+      next(err);
+    }
+  }
 }
 
-export async function createUser(req: Request, res: Response, next: NextFunction) {
-    try {
-        const data = userSchema.parse(req.body);
-        const user = await createUserService(data);
-        res.status(201).json(user);
-    } catch (err: unknown) {
-        if (err instanceof ZodError) {
-            return res.status(400).json({ error: err.errors });
-        }
-        if (isBusinessError(err)) {
-            return res.status(400).json({ error: err.errors });
-        }
-        next(err);
-    }
-} 
+export default UserController;

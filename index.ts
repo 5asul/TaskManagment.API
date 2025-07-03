@@ -22,36 +22,36 @@ app.use('/api', apiRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
+  res.json({ status: 'ok' });
 });
 
 // Improved error handler middleware (must be last)
-app.use(((err, req, res, next) => {
-    if (err instanceof z.ZodError) {
-        return res.status(400).json({ error: err.errors });
-    }
-    if (typeof err === 'object' && err !== null && 'errors' in err) {
-        // Business error
-        return res.status(400).json({ error: (err as { errors: { message: string }[] }).errors });
-    }
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+app.use(((err, req, res) => {
+  if (err instanceof z.ZodError) {
+    return res.status(400).json({ error: err.errors });
+  }
+  if (typeof err === 'object' && err !== null && 'errors' in err) {
+    // Business error
+    return res.status(400).json({ error: (err as { errors: { message: string }[] }).errors });
+  }
+  console.error(err);
+  res.status(500).json({ error: 'Internal Server Error' });
 }) as import('express').ErrorRequestHandler);
 
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
-    const server = app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+  const server = app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+  // Graceful shutdown
+  const shutdown = async () => {
+    await prisma.$disconnect();
+    server.close(() => {
+      process.exit(0);
     });
-    // Graceful shutdown
-    const shutdown = async () => {
-        await prisma.$disconnect();
-        server.close(() => {
-            process.exit(0);
-        });
-    };
-    process.on('SIGINT', shutdown);
-    process.on('SIGTERM', shutdown);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 
-export default app; 
+export default app;

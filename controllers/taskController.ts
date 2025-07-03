@@ -1,71 +1,73 @@
 import { Request, Response, NextFunction } from 'express';
-import { createTaskService, getTasksService, updateTaskStatusService, deleteTaskService } from '../services/taskService';
-import { taskSchema, taskQuerySchema, statusSchema } from '../validators/taskValidators';
-import { ZodError } from 'zod';
+import TaskService from '../services/taskService';
 
 interface BusinessError {
-    errors: { message: string }[];
+  errors: { message: string }[];
 }
 
-function isBusinessError(err: unknown): err is BusinessError {
+const taskService = new TaskService();
+
+class TaskController {
+  private static isBusinessError(err: unknown): err is BusinessError {
     return typeof err === 'object' && err !== null && 'errors' in err;
-}
+  }
 
-export async function createTask(req: Request, res: Response, next: NextFunction) {
+  public static async createTask(req: Request, res: Response, next: NextFunction) {
     try {
-        const data = taskSchema.parse(req.body);
-        const task = await createTaskService(data);
-        res.status(201).json(task);
+      const data = req.body;
+      const task = await taskService.createTask(data);
+      res.status(201).json(task);
+      return;
     } catch (err: unknown) {
-        if (err instanceof ZodError) {
-            return res.status(400).json({ error: err.errors });
-        }
-        if (isBusinessError(err)) {
-            return res.status(400).json({ error: err.errors });
-        }
-        next(err);
+      if (TaskController.isBusinessError(err)) {
+        res.status(400).json({ error: err.errors });
+        return;
+      }
+      next(err);
     }
-}
+  }
 
-export async function getTasks(req: Request, res: Response, next: NextFunction) {
+  public static async getTasks(req: Request, res: Response, next: NextFunction) {
     try {
-        const query = taskQuerySchema.parse(req.query);
-        const tasks = await getTasksService(query);
-        res.json(tasks);
+      const query = req.query;
+      const tasks = await taskService.getTasks(query);
+      res.json(tasks);
+      return;
     } catch (err: unknown) {
-        if (err instanceof ZodError) {
-            return res.status(400).json({ error: err.errors });
-        }
-        if (isBusinessError(err)) {
-            return res.status(400).json({ error: err.errors });
-        }
-        next(err);
+      if (TaskController.isBusinessError(err)) {
+        res.status(400).json({ error: err.errors });
+        return;
+      }
+      next(err);
     }
-}
+  }
 
-export async function updateTaskStatus(req: Request, res: Response, next: NextFunction) {
+  public static async updateTaskStatus(req: Request, res: Response, next: NextFunction) {
     try {
-        const { id } = req.params;
-        const data = statusSchema.parse(req.body);
-        const task = await updateTaskStatusService(id, data.status);
-        res.json(task);
+      const { id } = req.params;
+      const data = req.body;
+      const task = await taskService.updateTaskStatus(id, data.status);
+      res.json(task);
+      return;
     } catch (err: unknown) {
-        if (err instanceof ZodError) {
-            return res.status(400).json({ error: err.errors });
-        }
-        if (isBusinessError(err)) {
-            return res.status(400).json({ error: err.errors });
-        }
-        next(err);
+      if (TaskController.isBusinessError(err)) {
+        res.status(400).json({ error: err.errors });
+        return;
+      }
+      next(err);
     }
-}
+  }
 
-export async function deleteTask(req: Request, res: Response, next: NextFunction) {
+  public static async deleteTask(req: Request, res: Response, next: NextFunction) {
     try {
-        const { id } = req.params;
-        await deleteTaskService(id);
-        res.status(204).send();
+      const { id } = req.params;
+      await taskService.deleteTask(id);
+      res.status(204).send();
+      return;
     } catch (err) {
-        next(err);
+      next(err);
     }
-} 
+  }
+}
+
+export default TaskController;
