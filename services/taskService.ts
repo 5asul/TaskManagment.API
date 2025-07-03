@@ -47,4 +47,7 @@ export async function deleteTaskService(id: string) {
     const task = await prisma.task.findUnique({ where: { id } });
     if (!task) throw { errors: [{ message: 'Task not found' }] };
     return prisma.task.delete({ where: { id } });
-} 
+  }
+}
+
+export default new TaskService();

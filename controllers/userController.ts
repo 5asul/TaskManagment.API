@@ -7,15 +7,19 @@ interface BusinessError {
     errors: { message: string }[];
 }
 
-function isBusinessError(err: unknown): err is BusinessError {
+
+
+class UserController {
+  private static isBusinessError(err: unknown): err is BusinessError {
     return typeof err === 'object' && err !== null && 'errors' in err;
 }
 
-export async function createUser(req: Request, res: Response, next: NextFunction) {
+  public static async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-        const data = userSchema.parse(req.body);
-        const user = await createUserService(data);
-        res.status(201).json(user);
+      const data = req.body;
+      const user = await UserService.createUser(data);
+      res.status(201).json(user);
+      return;
     } catch (err: unknown) {
         if (err instanceof ZodError) {
             return res.status(400).json({ error: err.errors });
