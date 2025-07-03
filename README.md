@@ -104,6 +104,22 @@ yarn test
 
 ---
 
+## Linting and Formatting
+
+- **Lint your code with ESLint:**
+  ```bash
+  yarn lint
+  ```
+  This checks your code for style and best-practice issues using ESLint and TypeScript rules.
+
+- **Format your code with Prettier:**
+  ```bash
+  yarn format
+  ```
+  This automatically formats your codebase using Prettier according to the project style.
+
+---
+
 ## Project Structure
 
 ```
