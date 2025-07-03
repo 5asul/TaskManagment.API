@@ -7,4 +7,4 @@ const router = Router();
 router.use('/users', userRoutes);
 router.use('/tasks', taskRoutes);
 
-export default router; 
+export default router;
