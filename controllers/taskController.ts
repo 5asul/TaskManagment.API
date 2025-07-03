@@ -5,8 +5,6 @@ interface BusinessError {
   errors: { message: string }[];
 }
 
-
-
 class TaskController {
   private static isBusinessError(err: unknown): err is BusinessError {
     return typeof err === 'object' && err !== null && 'errors' in err;
